@@ -11,7 +11,7 @@
     <div v-if="center" id="mapid">
       <l-map style="height: 400px" :zoom="zoom" :center="center">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-marker :lat-lng="center" :icon="icon"></l-marker>
+      <l-marker :lat-lng="center" ></l-marker>
       </l-map>
     </div>
   </div>
@@ -19,8 +19,16 @@
 
 <script>
 import axios from 'axios';
-import { latLng } from "leaflet";
-import L from 'leaflet';
+import { latLng, Icon } from "leaflet";
+
+// this part resolve an issue where the markers would not appear
+delete Icon.Default.prototype._getIconUrl;
+
+Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 export default {
   name: 'Iss',
@@ -29,17 +37,17 @@ export default {
       loading: true,
       err: null,
       post: null,
-      zoom: 5,
+      zoom: 4,
       center: null,
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       currentZoom: 11.5,
       showParagraph: false,
-      icon:L.icon({
-        iconUrl: '../assets/logo.png',
-        iconSize: [32, 37],
-        iconAnchor: [16, 37]
-      }),
+      // icon:L.icon({
+      //   iconUrl: require('../assets/logo.png'),
+      //   iconSize: [32, 37],
+      //   iconAnchor: [16, 37]
+      // }),
       mapOptions: {
         zoomSnap: 0.5
       },
